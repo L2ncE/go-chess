@@ -5,6 +5,7 @@ type ServerConfig struct {
 	Port      int         `mapstructure:"port"`
 	GormInfo  GormConfig  `mapstructure:"gorm"`
 	RedisInfo RedisConfig `mapstructure:"redis"`
+	EtcdInfo  EtcdConfig  `mapstructure:"etcd"`
 }
 
 type GormConfig struct {
@@ -20,4 +21,8 @@ type RedisConfig struct {
 	Port     int    `mapstructure:"port"`
 	Password string `mapstructure:"password"`
 	DB       int    `mapstructure:"db"`
+}
+
+type EtcdConfig struct {
+	Addr string `mapstructure:"addr"`
 }

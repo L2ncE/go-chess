@@ -7,11 +7,14 @@ option go_package = "./user";
 message RegisterReq{
   string username = 1;
   string password = 2;
+  string question = 3;
+  string answer = 4;
+  string uuid = 5;
 }
 
 message RegisterRes{
   bool status = 1;
-  uint32 ID =2;
+  string description = 2;
 }
 
 message LoginReq{
@@ -22,6 +25,7 @@ message LoginReq{
 message LoginRes{
   bool status = 1;
   string token = 2;
+  string description = 3;
 }
 
 service RegisterCenter{
