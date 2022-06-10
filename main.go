@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"go-chess/api"
 	"go-chess/config"
 	mysql "go-chess/dao/gorm"
 	"go-chess/dao/redis"
@@ -22,4 +23,6 @@ func main() {
 	} else {
 		log.Println("连接Redis成功!")
 	}
+
+	api.InitEngine()
 }
