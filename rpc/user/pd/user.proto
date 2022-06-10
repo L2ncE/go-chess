@@ -39,11 +39,8 @@ message changeRes {
   string description = 2;
 }
 
-service changePW {
-  rpc changePW (changeReq) returns (changeRes);
-}
-
-service RegisterCenter{
+service UserCenter{
   rpc Register(RegisterReq) returns (RegisterRes);
   rpc Login(LoginReq) returns(LoginRes);
+  rpc changePW (changeReq) returns (changeRes);
 }

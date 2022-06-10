@@ -5,7 +5,6 @@ import (
 	"flag"
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
-	"go-chess/config"
 	"go-chess/etcd"
 	"go-chess/rpc/user/dao"
 	"go-chess/rpc/user/model"
@@ -18,7 +17,7 @@ import (
 )
 
 type server struct {
-	user.UnimplementedRegisterCenterServer
+	user.UnimplementedUserCenterServer
 }
 
 var etcdCenter = "127.0.0.1:2379"
@@ -37,7 +36,7 @@ func etcdInit(config *etcd.Config) (err error) {
 }
 
 func main() {
-	config.InitConfig()
+	//config.InitConfig()
 	dao.Init()
 	addr := flag.String("addr", "err", "127.0.0.1:50001")
 	flag.Parse()
@@ -46,7 +45,7 @@ func main() {
 		log.Println(err)
 	}
 	s := grpc.NewServer()
-	user.RegisterRegisterCenterServer(s, &server{})
+	user.RegisterUserCenterServer(s, &server{})
 
 	err = etcdInit(&etcd.Config{
 		EleName:   "go-chess/user",      //选举的信息

@@ -13,6 +13,7 @@ func InitEngine() {
 
 	engine.POST("/register", register)
 	engine.POST("/login", login)
+	engine.PUT("/password", changePassword)
 
 	err := engine.Run(fmt.Sprintf(":%d", global.Settings.Port))
 	if err != nil {

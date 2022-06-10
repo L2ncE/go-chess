@@ -90,3 +90,43 @@ func login(ctx *gin.Context) {
 	util.RespError(ctx, 400, res.Description)
 	return
 }
+
+func changePassword(ctx *gin.Context) {
+	username := ctx.PostForm("username")
+	oldPassword := ctx.PostForm("old_password")
+	newPassword := ctx.PostForm("new_password")
+
+	if username == "" || oldPassword == "" || newPassword == "" {
+		util.RespError(ctx, 400, "请将信息输入完整")
+		return
+	}
+
+	l1 := len([]rune(username))
+	l2 := len([]rune(oldPassword))
+	l3 := len([]rune(newPassword))
+	if l1 > 20 || l1 < 1 {
+		util.RespErrorWithData(ctx, 400, "wrong length", "用户名请在1-8位之间")
+		return
+	}
+	if l2 > 16 || l2 < 6 {
+		util.RespErrorWithData(ctx, 400, "wrong length", "密码请在6-16位之间")
+		return
+	}
+	if l3 > 16 || l3 < 6 {
+		util.RespErrorWithData(ctx, 400, "wrong length", "密码请在6-16位之间")
+		return
+	}
+
+	ctl := client.NewUserCtl("127.0.0.1:2379", "go-chess/user")
+	res := ctl.CallChangePW(model.ChangePassword{
+		Name:        username,
+		OldPassword: oldPassword,
+		NewPassword: newPassword,
+	})
+	if res.Status == true {
+		util.RespSuccessful(ctx, res.Description)
+		return
+	}
+	util.RespError(ctx, 400, res.Description)
+	return
+}

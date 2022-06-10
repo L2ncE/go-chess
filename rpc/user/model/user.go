@@ -8,3 +8,9 @@ type User struct {
 	Question string
 	Answer   string
 }
+
+type ChangePassword struct {
+	Name        string
+	OldPassword string
+	NewPassword string
+}

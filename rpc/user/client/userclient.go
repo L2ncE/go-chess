@@ -12,13 +12,15 @@ import (
 )
 
 type userInfo struct {
-	uuid     string
-	username string
-	password string
-	question string
-	answer   string
-	node     string
-	conn     *grpc.ClientConn
+	uuid        string
+	username    string
+	password    string
+	question    string
+	answer      string
+	oldPassword string
+	newPassword string
+	node        string
+	conn        *grpc.ClientConn
 }
 
 func NewUserCtl(endpoint, serverName string) (u *userInfo) {
@@ -46,18 +48,26 @@ func (u *userInfo) CallRegister(info model.User) *user.RegisterRes {
 	u.password = info.Password
 	u.question = info.Question
 	u.answer = info.Answer
-	client := user.NewRegisterCenterClient(u.conn)
+	client := user.NewUserCenterClient(u.conn)
 	return u.register(client)
 }
 
 func (u *userInfo) CallLogin(info model.User) *user.LoginRes {
 	u.username = info.Name
 	u.password = info.Password
-	client := user.NewRegisterCenterClient(u.conn)
+	client := user.NewUserCenterClient(u.conn)
 	return u.login(client)
 }
 
-func (u *userInfo) register(client user.RegisterCenterClient) *user.RegisterRes {
+func (u *userInfo) CallChangePW(info model.ChangePassword) *user.ChangeRes {
+	u.username = info.Name
+	u.oldPassword = info.OldPassword
+	u.newPassword = info.NewPassword
+	client := user.NewUserCenterClient(u.conn)
+	return u.changePW(client)
+}
+
+func (u *userInfo) register(client user.UserCenterClient) *user.RegisterRes {
 	res, err := client.Register(context.Background(), &user.RegisterReq{
 		Uuid:     u.uuid,
 		Username: u.username,
@@ -75,7 +85,7 @@ func (u *userInfo) register(client user.RegisterCenterClient) *user.RegisterRes 
 	return &user.RegisterRes{}
 }
 
-func (u *userInfo) login(client user.RegisterCenterClient) *user.LoginRes {
+func (u *userInfo) login(client user.UserCenterClient) *user.LoginRes {
 	res, err := client.Login(context.Background(), &user.LoginReq{
 		Username: u.username,
 		Password: u.password,
@@ -85,6 +95,22 @@ func (u *userInfo) login(client user.RegisterCenterClient) *user.LoginRes {
 		return &user.LoginRes{
 			Status: false,
 			Token:  "",
+		}
+	}
+	return res
+}
+
+func (u *userInfo) changePW(client user.UserCenterClient) *user.ChangeRes {
+	res, err := client.ChangePW(context.Background(), &user.ChangeReq{
+		Username:    u.username,
+		OldPassword: u.oldPassword,
+		NewPassword: u.newPassword,
+	})
+	if err != nil {
+		log.Println(err)
+		return &user.ChangeRes{
+			Status:      false,
+			Description: "error:" + err.Error(),
 		}
 	}
 	return res

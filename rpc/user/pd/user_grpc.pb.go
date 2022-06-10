@@ -18,208 +18,158 @@ import (
 // Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
-// ChangePWClient is the client API for ChangePW service.
+// UserCenterClient is the client API for UserCenter service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type ChangePWClient interface {
+type UserCenterClient interface {
+	Register(ctx context.Context, in *RegisterReq, opts ...grpc.CallOption) (*RegisterRes, error)
+	Login(ctx context.Context, in *LoginReq, opts ...grpc.CallOption) (*LoginRes, error)
 	ChangePW(ctx context.Context, in *ChangeReq, opts ...grpc.CallOption) (*ChangeRes, error)
 }
 
-type changePWClient struct {
+type userCenterClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewChangePWClient(cc grpc.ClientConnInterface) ChangePWClient {
-	return &changePWClient{cc}
+func NewUserCenterClient(cc grpc.ClientConnInterface) UserCenterClient {
+	return &userCenterClient{cc}
 }
 
-func (c *changePWClient) ChangePW(ctx context.Context, in *ChangeReq, opts ...grpc.CallOption) (*ChangeRes, error) {
-	out := new(ChangeRes)
-	err := c.cc.Invoke(ctx, "/user.changePW/changePW", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-// ChangePWServer is the server API for ChangePW service.
-// All implementations must embed UnimplementedChangePWServer
-// for forward compatibility
-type ChangePWServer interface {
-	ChangePW(context.Context, *ChangeReq) (*ChangeRes, error)
-	mustEmbedUnimplementedChangePWServer()
-}
-
-// UnimplementedChangePWServer must be embedded to have forward compatible implementations.
-type UnimplementedChangePWServer struct {
-}
-
-func (UnimplementedChangePWServer) ChangePW(context.Context, *ChangeReq) (*ChangeRes, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ChangePW not implemented")
-}
-func (UnimplementedChangePWServer) mustEmbedUnimplementedChangePWServer() {}
-
-// UnsafeChangePWServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to ChangePWServer will
-// result in compilation errors.
-type UnsafeChangePWServer interface {
-	mustEmbedUnimplementedChangePWServer()
-}
-
-func RegisterChangePWServer(s grpc.ServiceRegistrar, srv ChangePWServer) {
-	s.RegisterService(&ChangePW_ServiceDesc, srv)
-}
-
-func _ChangePW_ChangePW_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ChangeReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ChangePWServer).ChangePW(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/user.changePW/changePW",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ChangePWServer).ChangePW(ctx, req.(*ChangeReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-// ChangePW_ServiceDesc is the grpc.ServiceDesc for ChangePW service.
-// It's only intended for direct use with grpc.RegisterService,
-// and not to be introspected or modified (even as a copy)
-var ChangePW_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "user.changePW",
-	HandlerType: (*ChangePWServer)(nil),
-	Methods: []grpc.MethodDesc{
-		{
-			MethodName: "changePW",
-			Handler:    _ChangePW_ChangePW_Handler,
-		},
-	},
-	Streams:  []grpc.StreamDesc{},
-	Metadata: "user.proto",
-}
-
-// RegisterCenterClient is the client API for RegisterCenter service.
-//
-// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type RegisterCenterClient interface {
-	Register(ctx context.Context, in *RegisterReq, opts ...grpc.CallOption) (*RegisterRes, error)
-	Login(ctx context.Context, in *LoginReq, opts ...grpc.CallOption) (*LoginRes, error)
-}
-
-type registerCenterClient struct {
-	cc grpc.ClientConnInterface
-}
-
-func NewRegisterCenterClient(cc grpc.ClientConnInterface) RegisterCenterClient {
-	return &registerCenterClient{cc}
-}
-
-func (c *registerCenterClient) Register(ctx context.Context, in *RegisterReq, opts ...grpc.CallOption) (*RegisterRes, error) {
+func (c *userCenterClient) Register(ctx context.Context, in *RegisterReq, opts ...grpc.CallOption) (*RegisterRes, error) {
 	out := new(RegisterRes)
-	err := c.cc.Invoke(ctx, "/user.RegisterCenter/Register", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/user.UserCenter/Register", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *registerCenterClient) Login(ctx context.Context, in *LoginReq, opts ...grpc.CallOption) (*LoginRes, error) {
+func (c *userCenterClient) Login(ctx context.Context, in *LoginReq, opts ...grpc.CallOption) (*LoginRes, error) {
 	out := new(LoginRes)
-	err := c.cc.Invoke(ctx, "/user.RegisterCenter/Login", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/user.UserCenter/Login", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// RegisterCenterServer is the server API for RegisterCenter service.
-// All implementations must embed UnimplementedRegisterCenterServer
+func (c *userCenterClient) ChangePW(ctx context.Context, in *ChangeReq, opts ...grpc.CallOption) (*ChangeRes, error) {
+	out := new(ChangeRes)
+	err := c.cc.Invoke(ctx, "/user.UserCenter/changePW", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// UserCenterServer is the server API for UserCenter service.
+// All implementations must embed UnimplementedUserCenterServer
 // for forward compatibility
-type RegisterCenterServer interface {
+type UserCenterServer interface {
 	Register(context.Context, *RegisterReq) (*RegisterRes, error)
 	Login(context.Context, *LoginReq) (*LoginRes, error)
-	mustEmbedUnimplementedRegisterCenterServer()
+	ChangePW(context.Context, *ChangeReq) (*ChangeRes, error)
+	mustEmbedUnimplementedUserCenterServer()
 }
 
-// UnimplementedRegisterCenterServer must be embedded to have forward compatible implementations.
-type UnimplementedRegisterCenterServer struct {
+// UnimplementedUserCenterServer must be embedded to have forward compatible implementations.
+type UnimplementedUserCenterServer struct {
 }
 
-func (UnimplementedRegisterCenterServer) Register(context.Context, *RegisterReq) (*RegisterRes, error) {
+func (UnimplementedUserCenterServer) Register(context.Context, *RegisterReq) (*RegisterRes, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Register not implemented")
 }
-func (UnimplementedRegisterCenterServer) Login(context.Context, *LoginReq) (*LoginRes, error) {
+func (UnimplementedUserCenterServer) Login(context.Context, *LoginReq) (*LoginRes, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Login not implemented")
 }
-func (UnimplementedRegisterCenterServer) mustEmbedUnimplementedRegisterCenterServer() {}
+func (UnimplementedUserCenterServer) ChangePW(context.Context, *ChangeReq) (*ChangeRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ChangePW not implemented")
+}
+func (UnimplementedUserCenterServer) mustEmbedUnimplementedUserCenterServer() {}
 
-// UnsafeRegisterCenterServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to RegisterCenterServer will
+// UnsafeUserCenterServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to UserCenterServer will
 // result in compilation errors.
-type UnsafeRegisterCenterServer interface {
-	mustEmbedUnimplementedRegisterCenterServer()
+type UnsafeUserCenterServer interface {
+	mustEmbedUnimplementedUserCenterServer()
 }
 
-func RegisterRegisterCenterServer(s grpc.ServiceRegistrar, srv RegisterCenterServer) {
-	s.RegisterService(&RegisterCenter_ServiceDesc, srv)
+func RegisterUserCenterServer(s grpc.ServiceRegistrar, srv UserCenterServer) {
+	s.RegisterService(&UserCenter_ServiceDesc, srv)
 }
 
-func _RegisterCenter_Register_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _UserCenter_Register_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(RegisterReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(RegisterCenterServer).Register(ctx, in)
+		return srv.(UserCenterServer).Register(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/user.RegisterCenter/Register",
+		FullMethod: "/user.UserCenter/Register",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RegisterCenterServer).Register(ctx, req.(*RegisterReq))
+		return srv.(UserCenterServer).Register(ctx, req.(*RegisterReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _RegisterCenter_Login_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _UserCenter_Login_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(LoginReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(RegisterCenterServer).Login(ctx, in)
+		return srv.(UserCenterServer).Login(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/user.RegisterCenter/Login",
+		FullMethod: "/user.UserCenter/Login",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RegisterCenterServer).Login(ctx, req.(*LoginReq))
+		return srv.(UserCenterServer).Login(ctx, req.(*LoginReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// RegisterCenter_ServiceDesc is the grpc.ServiceDesc for RegisterCenter service.
+func _UserCenter_ChangePW_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ChangeReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserCenterServer).ChangePW(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/user.UserCenter/changePW",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserCenterServer).ChangePW(ctx, req.(*ChangeReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// UserCenter_ServiceDesc is the grpc.ServiceDesc for UserCenter service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var RegisterCenter_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "user.RegisterCenter",
-	HandlerType: (*RegisterCenterServer)(nil),
+var UserCenter_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "user.UserCenter",
+	HandlerType: (*UserCenterServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "Register",
-			Handler:    _RegisterCenter_Register_Handler,
+			Handler:    _UserCenter_Register_Handler,
 		},
 		{
 			MethodName: "Login",
-			Handler:    _RegisterCenter_Login_Handler,
+			Handler:    _UserCenter_Login_Handler,
+		},
+		{
+			MethodName: "changePW",
+			Handler:    _UserCenter_ChangePW_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
