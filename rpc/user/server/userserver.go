@@ -143,3 +143,31 @@ func (s *server) Login(_ context.Context, req *user.LoginReq) (res *user.LoginRe
 		Description: "wrong password",
 	}, nil
 }
+
+func (s *server) ChangePW(_ context.Context, req *user.ChangeReq) (res *user.ChangeRes, err error) {
+	res = &user.ChangeRes{
+		Status:      false,
+		Description: "update password failed",
+	}
+
+	isC, err := service.IsPasswordCorrect(req.Username, req.OldPassword)
+	if !isC {
+		return &user.ChangeRes{
+			Status:      false,
+			Description: "wrong password",
+		}, nil
+	}
+
+	err = service.ChangePassword(req.Username, req.NewPassword)
+
+	if err != nil {
+		return &user.ChangeRes{
+			Status:      false,
+			Description: "update password error",
+		}, err
+	}
+	return &user.ChangeRes{
+		Status:      true,
+		Description: "update password success",
+	}, nil
+}

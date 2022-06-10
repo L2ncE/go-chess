@@ -28,6 +28,21 @@ message LoginRes{
   string description = 3;
 }
 
+message changeReq {
+  string old_password = 1;
+  string new_password = 2;
+  string username = 3;
+}
+
+message changeRes {
+  bool status = 1;
+  string description = 2;
+}
+
+service changePW {
+  rpc changePW (changeReq) returns (changeRes);
+}
+
 service RegisterCenter{
   rpc Register(RegisterReq) returns (RegisterRes);
   rpc Login(LoginReq) returns(LoginRes);

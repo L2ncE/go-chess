@@ -1,6 +1,7 @@
 package mysql
 
 import (
+	"fmt"
 	"go-chess/rpc/user/model"
 	"log"
 )
@@ -46,4 +47,14 @@ func SelectUuIdByName(name string) (string, error) {
 		return "", err
 	}
 	return user.Uuid, nil
+}
+
+func UpdatePassword(name string, newPassword string) error {
+	deRes := db.Model(&model.User{}).Where("name = ?", name).Update("Password", newPassword)
+	err := deRes.Error
+	if err != nil {
+		fmt.Printf("update failed, err:%v\n", err)
+		return err
+	}
+	return err
 }

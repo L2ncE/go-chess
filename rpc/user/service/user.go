@@ -31,6 +31,7 @@ func IsRepeatUsername(name string) (bool, error) {
 
 func InsertUser(user model.User) error {
 	err := mysql.InsertUser(user)
+	err = redis.AddUsername(user.Name)
 	return err
 }
 
@@ -48,4 +49,9 @@ func IsPasswordCorrect(username, password string) (bool, error) {
 func GetUuidByUsername(username string) (string, error) {
 	uuid, err := mysql.SelectUuIdByName(username)
 	return uuid, err
+}
+
+func ChangePassword(name string, password string) error {
+	err := mysql.UpdatePassword(name, password)
+	return err
 }

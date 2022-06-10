@@ -23,7 +23,7 @@ func AddUsername(name string) error {
 }
 
 func IsUsernameCacheAlive() (bool, error) {
-	es, err := rdb.SMembers("openid").Result()
+	es, err := rdb.SMembers("username").Result()
 	if err != nil {
 		log.Println("openid cache get error:", err)
 		return false, err
