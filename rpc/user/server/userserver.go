@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
+	"go-chess/config"
 	"go-chess/etcd"
 	"go-chess/rpc/user/dao"
 	"go-chess/rpc/user/model"
@@ -36,6 +37,7 @@ func etcdInit(config *etcd.Config) (err error) {
 }
 
 func main() {
+	config.InitConfig()
 	dao.Init()
 	addr := flag.String("addr", "err", "127.0.0.1:50001")
 	flag.Parse()

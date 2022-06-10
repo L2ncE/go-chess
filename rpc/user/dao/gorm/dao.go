@@ -3,6 +3,7 @@ package mysql
 import (
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
+	"go-chess/global"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/schema"
@@ -14,7 +15,7 @@ var db *gorm.DB
 func InitGormDB() (err error) {
 	dB, err := gorm.Open(mysql.New(mysql.Config{
 		DSN: fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local",
-			"chess", "CRB32ie3XrzJkdaX", "42.192.155.29", 3306, "chess"), // DSN data source name		DefaultStringSize:        171,
+			global.Settings.GormInfo.Name, global.Settings.GormInfo.Password, global.Settings.GormInfo.Host, global.Settings.GormInfo.Port, global.Settings.GormInfo.DBName), // DSN data source name		DefaultStringSize:        171,
 		DisableDatetimePrecision: true,
 		DontSupportRenameIndex:   true,
 	}), &gorm.Config{
