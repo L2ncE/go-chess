@@ -1,11 +1,14 @@
 package api
 
 import (
+	"fmt"
+	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	uuid "github.com/satori/go.uuid"
 	"go-chess/rpc/user/client"
 	"go-chess/rpc/user/model"
 	"go-chess/util"
+	"time"
 )
 
 func register(ctx *gin.Context) {
@@ -83,8 +86,22 @@ func login(ctx *gin.Context) {
 		Name:     username,
 		Password: password,
 	})
+
+	claim := model.MyClaims{
+		Uuid: res.Token,
+		StandardClaims: jwt.StandardClaims{
+			NotBefore: time.Now().Unix() - 60,
+			ExpiresAt: time.Now().Unix() + 2592000, //30天，仅做测试
+			Issuer:    "YuanXinHao",
+		},
+	}
+	t := jwt.NewWithClaims(jwt.SigningMethodHS256, claim)
+	s, err := t.SignedString(mySigningKey)
+	if err != nil {
+		util.RespError(ctx, 400, err)
+	}
 	if res.Status == true {
-		util.RespSuccessfulWithData(ctx, res.Description, res.Token)
+		util.RespSuccessfulWithData(ctx, res.Description, s)
 		return
 	}
 	util.RespError(ctx, 400, res.Description)
@@ -92,6 +109,8 @@ func login(ctx *gin.Context) {
 }
 
 func changePassword(ctx *gin.Context) {
+	uuid, _ := ctx.Get("uuid")
+	fmt.Println(uuid)
 	username := ctx.PostForm("username")
 	oldPassword := ctx.PostForm("old_password")
 	newPassword := ctx.PostForm("new_password")

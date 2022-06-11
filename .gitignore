@@ -1,3 +1,7 @@
 setting-dev.yaml
 .idea
 .xml
+
+rpc/user/dao/gorm/dao.go
+
+rpc/user/dao/redis/dao.go

@@ -4,7 +4,6 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"github.com/dgrijalva/jwt-go"
 	"go-chess/etcd"
 	"go-chess/rpc/user/dao"
 	"go-chess/rpc/user/model"
@@ -13,7 +12,6 @@ import (
 	"google.golang.org/grpc"
 	"log"
 	"net"
-	"time"
 )
 
 type server struct {
@@ -113,17 +111,6 @@ func (s *server) Login(_ context.Context, req *user.LoginReq) (res *user.LoginRe
 	if isC {
 		uuid, err := service.GetUuidByUsername(req.Username)
 
-		c := model.MyClaims{
-			Uuid: uuid,
-			StandardClaims: jwt.StandardClaims{
-				NotBefore: time.Now().Unix() - 60,
-				ExpiresAt: time.Now().Unix() + 2592000, //30天，仅做测试
-				Issuer:    "YuanXinHao",
-			},
-		}
-		t := jwt.NewWithClaims(jwt.SigningMethodHS256, c)
-		var mySigningKey = []byte("go-chess")
-		s, err := t.SignedString(mySigningKey)
 		if err != nil {
 			log.Println(err)
 			return &user.LoginRes{
@@ -134,7 +121,7 @@ func (s *server) Login(_ context.Context, req *user.LoginReq) (res *user.LoginRe
 		return &user.LoginRes{
 			Status:      true,
 			Description: "login successful",
-			Token:       s,
+			Token:       uuid,
 		}, nil
 	}
 	return &user.LoginRes{
