@@ -280,6 +280,11 @@ func (h *hub) run() {
 					close(m.conn.send)
 					for con := range conns {
 						delMsg := "系统消息：" + m.name + "离开了" + m.roomId + "聊天室"
+						uuid, err := mysql.SelectUuidByName(m.name)
+						err = redis.DeleteUser(m.roomId, uuid)
+						if err != nil {
+							log.Println(err)
+						}
 						data := []byte(delMsg)
 						select {
 						case con.send <- data:

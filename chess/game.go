@@ -77,8 +77,8 @@ func (g *Game) Update(screen *ebiten.Image) error {
 			x, y := ebiten.CursorPosition()
 			x = Left + (x-BoardEdge)/SquareSize
 			y = Top + (y-BoardEdge)/SquareSize
-			g.clickSquare1(squareXY(x, y))
-			g.clickSquare2(squareXY(x, y))
+			fmt.Printf("x:%d y:%d", x, y)
+			g.clickSquare(squareXY(x, y))
 		}
 	}
 
@@ -160,7 +160,7 @@ func (g *Game) drawChess(x, y int, screen, img *ebiten.Image) {
 	screen.DrawImage(img, op)
 }
 
-func (g *Game) clickSquare1(sq int) {
+func (g *Game) clickSquare(sq int) {
 	pc := 0
 	if g.bFlipped {
 		pc = g.singlePosition.ucpcSquares[squareFlip(sq)]
@@ -216,7 +216,7 @@ func (g *Game) clickSquare1(sq int) {
 							g.playAudio()
 						}
 					}
-					g.clickSquare1(sq)
+					g.clickSquare(sq)
 				}
 			}
 		}
@@ -225,70 +225,6 @@ func (g *Game) clickSquare1(sq int) {
 
 func (g *Game) playAudio() {
 	return
-}
-
-func (g *Game) clickSquare2(sq int) {
-	pc := 0
-	if g.bFlipped {
-		pc = g.singlePosition.ucpcSquares[squareFlip(sq)]
-	} else {
-		pc = g.singlePosition.ucpcSquares[sq]
-	}
-
-	if (pc & sideTag(g.singlePosition.sdPlayer)) != 0 {
-		//如果点击自己的棋子，那么直接选中
-		g.sqSelected = sq
-		g.playAudio()
-	} else if g.sqSelected != 0 && !g.bGameOver {
-		//如果点击的不是自己的棋子，但有棋子选中了(一定是自己的棋子)，那么走这个棋子
-		mv := move(g.sqSelected, sq)
-		if g.singlePosition.legalMove(mv) {
-			if g.singlePosition.makeMove(mv) {
-				g.mvLast = mv
-				g.sqSelected = 0
-				//检查重复局面
-				vlRep := g.singlePosition.repStatus(3)
-				if g.singlePosition.isMate() {
-					//如果分出胜负，那么播放胜负的声音，并且弹出不带声音的提示框
-					g.playAudio()
-					g.showValue = "Your Win!"
-					g.bGameOver = true
-				} else if vlRep > 0 {
-					vlRep = g.singlePosition.repValue(vlRep)
-					if vlRep > WinValue {
-						g.playAudio()
-						g.showValue = "Your Lose!"
-					} else {
-						if vlRep < -WinValue {
-							g.playAudio()
-							g.showValue = "Your Win!"
-						} else {
-							g.playAudio()
-							g.showValue = "Your Draw!"
-						}
-					}
-					g.bGameOver = true
-				} else if g.singlePosition.nMoveNum > 100 {
-					g.playAudio()
-					g.showValue = "Your Draw!"
-					g.bGameOver = true
-				} else {
-					if g.singlePosition.checked() {
-						g.playAudio()
-					} else {
-						if g.singlePosition.captured() {
-							g.playAudio()
-							g.singlePosition.setIrrev()
-						} else {
-							g.playAudio()
-						}
-					}
-				}
-			} else {
-				g.playAudio()
-			}
-		}
-	}
 }
 
 func (g *Game) messageBox(screen *ebiten.Image) {

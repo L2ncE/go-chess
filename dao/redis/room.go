@@ -13,6 +13,15 @@ func AddRoom(id string, uuid string) error {
 	return nil
 }
 
+func DeleteUser(id string, uuid string) error {
+	err := rdb.SRem("room_"+id, uuid).Err()
+	if err != nil {
+		log.Println("redis delete uuid err", err)
+		return err
+	}
+	return nil
+}
+
 func AddRoomId(id string) error {
 	err := rdb.SAdd("room", id).Err()
 	if err != nil {
