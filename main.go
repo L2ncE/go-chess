@@ -3,15 +3,19 @@ package main
 import (
 	"fmt"
 	"go-chess/api"
+	"go-chess/chess"
 	"go-chess/config"
 	"go-chess/dao/mysql"
 	"go-chess/dao/redis"
 	"go-chess/pprof"
 	"go-chess/task"
 	"log"
+	"sync"
 )
 
 func main() {
+	var wg sync.WaitGroup
+	wg.Add(1)
 	config.InitConfig()
 	pprof.InitPprofMonitor()
 
@@ -28,5 +32,10 @@ func main() {
 	}
 
 	task.CronInit()
-	api.InitEngine()
+	go func() {
+		api.InitEngine()
+		wg.Done()
+	}()
+	chess.NewGame()
+	wg.Wait()
 }

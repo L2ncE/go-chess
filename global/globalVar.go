@@ -6,4 +6,6 @@ import (
 
 var (
 	Settings model.ServerConfig
+	X        int
+	Y        int
 )

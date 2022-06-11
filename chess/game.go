@@ -3,6 +3,7 @@ package chess
 import (
 	"bytes"
 	"fmt"
+	"go-chess/global"
 	"image"
 	"image/color"
 	_ "image/png"
@@ -74,11 +75,11 @@ func (g *Game) Update(screen *ebiten.Image) error {
 			g.mvLast = 0
 			g.singlePosition.startup()
 		} else {
-			x, y := ebiten.CursorPosition()
-			x = Left + (x-BoardEdge)/SquareSize
-			y = Top + (y-BoardEdge)/SquareSize
-			fmt.Printf("x:%d y:%d", x, y)
-			g.clickSquare(squareXY(x, y))
+			global.X, global.Y = ebiten.CursorPosition()
+			global.X = Left + (global.X-BoardEdge)/SquareSize
+			global.Y = Top + (global.Y-BoardEdge)/SquareSize
+			g.clickSquare(squareXY(global.X, global.Y))
+			fmt.Printf("x:%d y:%d\n", global.X, global.Y)
 		}
 	}
 
@@ -186,18 +187,22 @@ func (g *Game) clickSquare(sq int) {
 					g.playAudio()
 					g.showValue = "Your Win!"
 					g.bGameOver = true
+
 				} else if vlRep > 0 {
 					vlRep = g.singlePosition.repValue(vlRep)
 					if vlRep > WinValue {
 						g.playAudio()
 						g.showValue = "Your Lose!"
+
 					} else {
 						if vlRep < -WinValue {
 							g.playAudio()
 							g.showValue = "Your Win!"
+
 						} else {
 							g.playAudio()
 							g.showValue = "Your Draw!"
+
 						}
 					}
 					g.bGameOver = true
@@ -205,6 +210,7 @@ func (g *Game) clickSquare(sq int) {
 					g.playAudio()
 					g.showValue = "Your Draw!"
 					g.bGameOver = true
+					return
 				} else {
 					if g.singlePosition.checked() {
 						g.playAudio()
