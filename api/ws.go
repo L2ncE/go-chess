@@ -75,7 +75,18 @@ func serverWs(ctx *gin.Context) {
 		return
 	}
 
+	flag, err := redis.IsAliveRoom(roomId)
+	if !flag {
+		err = redis.AddRoomId(roomId)
+		if err != nil {
+			log.Println(err)
+			util.RespError(ctx, 400, err)
+			return
+		}
+	}
+
 	err = redis.AddRoom(roomId, uuid)
+
 	name, err := mysql.SelectUserNameByUUId(uuid)
 
 	if err != nil {

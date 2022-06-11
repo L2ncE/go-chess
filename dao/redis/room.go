@@ -13,6 +13,24 @@ func AddRoom(id string, uuid string) error {
 	return nil
 }
 
+func AddRoomId(id string) error {
+	err := rdb.SAdd("room", id).Err()
+	if err != nil {
+		log.Println("redis add room err", err)
+		return err
+	}
+	return nil
+}
+
+func IsAliveRoom(id string) (bool, error) { //当前用户是否注册
+	flag, err := rdb.SIsMember("room", id).Result()
+	if err != nil {
+		log.Println("redis judge is alive err:", err)
+		return false, err
+	}
+	return flag, nil
+}
+
 func RoomNum(id string) (int, error) {
 	es, err := rdb.SMembers("room_" + id).Result()
 	if err != nil {
@@ -52,4 +70,23 @@ func IsInRoom(roomId string, uuid string) (bool, error) { //当前用户是否�
 		return false, err
 	}
 	return flag, nil
+}
+
+func DeleteEmptyRoom() error {
+	set, err := rdb.SMembers("room").Result()
+	if err != nil {
+		log.Println("len of room get error:", err)
+		return err
+	}
+	for _, v := range set {
+		es, err := rdb.SMembers("room_" + v).Result()
+		if err != nil {
+			log.Println(err)
+			return err
+		}
+		if len(es) <= 0 {
+			rdb.Del("room_" + v)
+		}
+	}
+	return nil
 }
