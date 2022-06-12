@@ -6,10 +6,10 @@
 - [go-chess](#go-chess)
     - [目录](#目录)
     - [功能实现](功能实现)
-        - [基础功能](基础功能)   
-        - [加分项](加分项)
-            - [功能类](功能类)
-            - [技术类](技术类)
+         - [基础功能](基础功能)   
+              - [加分项](加分项)
+              - [功能类](功能类)
+              - [技术类](技术类)
     - [接口说明](#接口说明)
     - [加分项实现](#加分项实现)
     - [快速开始](#快速开始)
@@ -366,7 +366,19 @@ $ go run userserver.go -addr 127.0.0.1:50001 //把ETCD跑起来
 
 按照接口文档在同一个房间中加入两名用户
 
+需要C编译器，因为 Ebitengine 不仅使用 Go，还使用 C。
+
+```shell
+$ apt install gcc
+$ sudo apt install libc6-dev libglu1-mesa-dev libgl1-mesa-dev libxcursor-dev libxi-dev libxinerama-dev libxrandr-dev libxxf86vm-dev libasound2-dev pkg-config
+```
+
 **PS:房间red中已有两名用户，可直接开启游戏进行测试**
 
 进入到chess包中运行`main.go`若房间人满则可开始游戏
 
+游戏逻辑以及棋盘设计参考 https://wangqianhong.com/tag/%e4%b8%ad%e5%9b%bd%e8%b1%a1%e6%a3%8b
+
+![QQ录屏20220612120701](https://s2.loli.net/2022/06/12/vQ9haft2zXFUNyI.gif)
+
+每一次点击棋盘都会有坐标传出
