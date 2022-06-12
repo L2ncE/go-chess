@@ -6,13 +6,13 @@
 - [go-chess](#go-chess)
     - [目录](#目录)
     - [功能实现](功能实现)
-      - [基础功能](基础功能)   
-      - [加分项](加分项)
-        - [功能类](功能类)
-        - [技术类](技术类)
+        - [基础功能](基础功能)   
+        - [加分项](加分项)
+            - [功能类](功能类)
+            - [技术类](技术类)
     - [接口说明](#接口说明)
     - [加分项实现](#加分项实现)
-    - [Other](#Other)
+    - [快速开始](#快速开始)
 
 ##  功能实现
 
@@ -300,4 +300,54 @@ $ go tool pprof -http=:8080 "http://localhost:9990/debug/pprof/heap //或其他
 使用viper配置并进行热重载设置
 
 配置模板 `setting-dev.yaml`
+
+```yaml
+# settings-dev.yaml
+name: "go-chess"
+port: 1234
+
+gorm:
+  name: "xx"
+  host: "xx.xx.xx.xx"
+  port: 3306
+  password: "xxxxxxxx"
+  dbName: "xx"
+
+redis:
+  host: "xx.xx.xx.xx"
+  port: 6379
+  password: ":.xxxx@:xxx?Zx"
+  DB: 10
+
+etcd:
+  addr: "xxxx.0.x:2379"
+```
+
+```go
+func InitConfig() {
+   // 实例化viper
+   v := viper.New()
+   //文件的路径如何设置
+   v.SetConfigFile("./setting-dev.yaml")
+   err := v.ReadInConfig()
+   if err != nil {
+      log.Println(err)
+   }
+   serverConfig := model.ServerConfig{}
+   //给serverConfig初始值
+   err = v.Unmarshal(&serverConfig)
+   if err != nil {
+      log.Println(err)
+   }
+   // 传递给全局变量
+   global.Settings = serverConfig
+
+   //热重载配置
+   v.OnConfigChange(func(e fsnotify.Event) {
+      log.Printf("config file:%s Op:%s\n", e.Name, e.Op)
+   })
+   v.WatchConfig()
+```
+
+## 快速开始
 
