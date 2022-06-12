@@ -433,3 +433,4 @@ $ sudo apt install libc6-dev libglu1-mesa-dev libgl1-mesa-dev libxcursor-dev lib
 
 ![QQ录屏20220612120701](https://s2.loli.net/2022/06/12/vQ9haft2zXFUNyI.gif)
 
+![image-20220612122658899](https://s2.loli.net/2022/06/12/5nz8IWAPoJj3TdY.png)
