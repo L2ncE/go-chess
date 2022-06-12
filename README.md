@@ -11,6 +11,11 @@
                    - [功能类](#功能类)
                    - [技术类](#技术类)
     - [接口说明](#接口说明)
+              - [注册 POST](#注册-POST)
+              - [登录 POST](#登录-POST)
+              - [改密码 PUT](#改密码-PUT)
+              - [切换准备状态 GET](#切换准备状态-GET)
+              - [加入房间 WebSocket](#加入房间-WebSocket)
     - [加分项实现](#加分项实现)
     - [快速开始](#快速开始)
 
@@ -67,7 +72,9 @@
 
 https://www.postman.com/yuanxinhao/workspace/chess
 
-### 注册 POST `42.192.155.29:6666/user/register`
+### 注册 POST 
+
+`42.192.155.29:6666/user/register`
 
 BODY
 
@@ -78,7 +85,9 @@ BODY
 | question | 可选        |
 | answer   | 可选        |
 
-### 登录 POST  `42.192.155.29:6666/user/login`
+### 登录 POST  
+
+`42.192.155.29:6666/user/login`
 
 BODY
 
@@ -87,7 +96,9 @@ BODY
 | username | 必填        |
 | password | 必填        |
 
-### 改密码 PUT `42.192.155.29:6666/user/password`
+### 改密码 PUT 
+
+`42.192.155.29:6666/user/password`
 
 HEADER
 
@@ -103,7 +114,9 @@ BODY
 | old_password | 必填        |
 | new_password | 必填        |
 
-### 切换准备状态 GET `42.192.155.29:6666/ready/:room_id`
+### 切换准备状态 GET
+
+ `42.192.155.29:6666/ready/:room_id`
 
 HEADER
 
@@ -117,7 +130,9 @@ PARAM
 | ------- | ----------- |
 | room_id | 必填        |
 
-### 加入房间 WebSocket `ws://42.192.155.29:6666/?room_id=red`
+### 加入房间 WebSocket 
+
+`ws://42.192.155.29:6666/?room_id=red`
 
 HEADER
 
@@ -132,6 +147,41 @@ PARAM
 | room_id | 必填        |
 
 ## 加分项实现
+
+### WebSocekt禁言操作
+
+```go
+// 不合法信息3次，判断是否有不合法信息，没有进行信息发布
+   if c.limitNum >= 3 {
+      h.kickoutroom <- m
+      log.Println("素质太低，给你踢出去")
+      _ = c.ws.Close() //
+   } else //没有超过三次，可以继续
+   {
+      baseStr := "死傻操" //违法字符
+      testStr := string(msg[:])
+      for _, word := range testStr {
+         //遍历是否有违法字符
+         res := strings.Contains(baseStr, string(word))
+         if res == true {
+            c.limitNum += 1
+            c.forbiddenWord = true //禁言
+            //记录禁言开始时间
+            c.timeLog = time.Now().Unix()
+            h.warnings <- m
+            break
+         }
+      }
+      // 不禁言，消息合法 可以发送
+      if c.forbiddenWord != true {
+         // 通过所有检查，进行广播
+
+         m := message{msg, m.roomId, m.name, c}
+         h.broadcast <- m
+      }
+       
+   }
+```
 
 ### gRPC + ETCD
 
@@ -379,6 +429,7 @@ $ sudo apt install libc6-dev libglu1-mesa-dev libgl1-mesa-dev libxcursor-dev lib
 
 游戏逻辑以及棋盘设计参考 https://wangqianhong.com/tag/%e4%b8%ad%e5%9b%bd%e8%b1%a1%e6%a3%8b
 
+每一次点击棋盘都会有坐标传出
+
 ![QQ录屏20220612120701](https://s2.loli.net/2022/06/12/vQ9haft2zXFUNyI.gif)
 
-每一次点击棋盘都会有坐标传出
