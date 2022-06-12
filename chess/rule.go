@@ -1,4 +1,4 @@
-package chess
+package main
 
 import (
 	"bufio"

@@ -1,9 +1,8 @@
-package chess
+package main
 
 import (
 	"bytes"
 	"fmt"
-	"go-chess/global"
 	"image"
 	"image/color"
 	_ "image/png"
@@ -75,11 +74,11 @@ func (g *Game) Update(screen *ebiten.Image) error {
 			g.mvLast = 0
 			g.singlePosition.startup()
 		} else {
-			global.X, global.Y = ebiten.CursorPosition()
-			global.X = Left + (global.X-BoardEdge)/SquareSize
-			global.Y = Top + (global.Y-BoardEdge)/SquareSize
-			g.clickSquare(squareXY(global.X, global.Y))
-			fmt.Printf("x:%d y:%d\n", global.X, global.Y)
+			X, Y = ebiten.CursorPosition()
+			X = Left + (X-BoardEdge)/SquareSize
+			Y = Top + (Y-BoardEdge)/SquareSize
+			g.clickSquare(squareXY(X, Y))
+			fmt.Printf("x:%d y:%d\n", X, Y)
 		}
 	}
 

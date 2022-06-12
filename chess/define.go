@@ -1,4 +1,4 @@
-package chess
+package main
 
 const (
 	//ImgChessBoard 棋盘
