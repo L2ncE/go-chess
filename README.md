@@ -65,6 +65,8 @@
 
 ## 接口说明
 
+https://www.postman.com/yuanxinhao/workspace/chess
+
 ### 注册 POST `42.192.155.29:6666/user/register`
 
 BODY
@@ -350,4 +352,21 @@ func InitConfig() {
 ```
 
 ## 快速开始
+
+若要在本地运行需要本地有**Go** **C** **ETCD** **Redis**环境
+
+```sh
+$ go clone https://github.com/L2ncE/go-chess
+确保已配置setting-dev.yaml
+$ go run main.go
+$ cd ./rpc/user/server
+$ etcd
+$ go run userserver.go -addr 127.0.0.1:50001 //把ETCD跑起来
+```
+
+按照接口文档在同一个房间中加入两名用户
+
+**PS:房间red中已有两名用户，可直接开启游戏进行测试**
+
+进入到chess包中运行`main.go`若房间人满则可开始游戏
 
